@@ -2,20 +2,16 @@ import {React} from "react";
 import { SafeAreaView, StyleSheet, Pressable, Text} from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export function MainButton({title, add, ...rest}) {
+export function MainButton({title, ...rest}) {
 
     return(
         <SafeAreaView style={styles.container}>
             <Pressable 
-                style={[
-                    styles.button,
-                    add ? styles.adDbutton : styles.secondaryButton
-                ]}
-                add={add}
+                style={styles.button}
                 {...rest} 
             >
-                {add && <Icon name="control-point" size={30} color="#DFFBFC" style={styles.icon} />}
-                <Text style={[styles.text, add && styles.addedText]}>{title}</Text>
+    
+                <Text style={styles.text}>{title}</Text>
             </Pressable>
         </SafeAreaView>
     );
@@ -33,24 +29,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 48,
         paddingVertical: 12,
-        paddingHorizontal: 32,
+        paddingHorizontal: 34,
         borderRadius: 8,
         elevation: 3,
-    },
-
-    adDbutton: {
-        height: 70,
-        width: '65%',
-        alignItems: 'center',
-        paddingHorizontal: 16,
-        justifyContent: 'flex-start',
-        background: 'none',
-        borderWidth: 2,
-        borderColor: '#DFFBFC',
-        shadowColor: 'transparent'
-    },
-
-    secondaryButton: {
         backgroundColor: '#EE6B4D',
     },
 
