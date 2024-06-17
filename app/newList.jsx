@@ -62,14 +62,14 @@ export default function newList() {
           </View>
         </View>
 
-        <MainButton title='Adicionar' add/>
+        <MainButton title='Adicionar' add color='#FFFDEA'/>
 
         <Category title='Frutas e verduras' icon/>
         {items.map((item, index) => (
           <ListItem key={index} title={item} icon index={index} />
         ))}
 
-      <MainButton title='Salvar'/>
+      <MainButton title='Salvar' color='#EE6B4D'/>
       </ScrollView>
 
     </View>

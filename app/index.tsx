@@ -26,22 +26,19 @@ export default function Index() {
 
       <View style={styles.scrollViewContainer}>
         <ScrollView style={styles.scroll}>
-          <Pressable style={styles.item}>
-            <Text style={styles.textDate}>19/02/24</Text>
-            <Text style={styles.textItem}>Lista vovô</Text>
-          </Pressable>
-          <Pressable style={styles.item}>
-            <Text style={styles.textDate}>19/02/24</Text>
-            <Text style={styles.textItem}>Lista vovô</Text>
-          </Pressable>
-          <Pressable style={styles.item}>
-            <Text style={styles.textDate}>19/02/24</Text>
-            <Text style={styles.textItem}>Lista vovô</Text>
-          </Pressable>
-          <Pressable style={styles.item}>
-            <Text style={styles.textDate}>19/02/24</Text>
-            <Text style={styles.textItem}>Lista vovô</Text>
-          </Pressable>
+          <Link href="/list" style={styles.item}>
+            <Pressable>
+              <Text style={styles.textDate}>19/02/24</Text>
+              <Text style={styles.textItem}>Lista vovô</Text>
+            </Pressable>
+          </Link>
+
+          <Link href="/list" style={styles.item}>
+            <Pressable >
+              <Text style={styles.textDate}>19/02/24</Text>
+              <Text style={styles.textItem}>Lista vovô</Text>
+            </Pressable>
+          </Link>
         </ScrollView>
 
         <Text style={styles.textItemNone}>Por enquanto você não possui nenhuma listinha :(</Text>

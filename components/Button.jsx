@@ -1,14 +1,24 @@
 import {React} from "react";
-import { SafeAreaView, StyleSheet, Pressable, Text} from "react-native";
+import { SafeAreaView, StyleSheet, Pressable, Text, View} from "react-native";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export function MainButton({title, add, ...rest}) {
+export function MainButton({title, add, color, icon, ...rest}) {
 
     return(
         <SafeAreaView style={[add ? styles.add : styles.container]}>
             <Pressable 
-                style={[styles.button, add && styles.addButton]}
-                {...rest} 
+                style={[
+                    styles.button,
+                    add && styles.addButton,
+                    { backgroundColor: color }
+                ]}
+                {...rest}
             >
+                {icon && (
+                    <View style={styles.iconWrapper}>
+                        <Icon name={icon} size={20} color="#293241" />
+                    </View>
+                )}
                 <Text style={[styles.text, add && styles.addText]}>{title}</Text>
             </Pressable>
         </SafeAreaView>
@@ -25,7 +35,6 @@ const styles = StyleSheet.create({
     },
 
     addButton: {
-        backgroundColor: '#FFFDEA',
         marginBottom: 16
     },
 
@@ -34,12 +43,12 @@ const styles = StyleSheet.create({
         gap: 5,
         alignItems: 'center',
         justifyContent: 'center',
+        alignContent: 'center',
         height: 48,
         paddingVertical: 12,
-        paddingHorizontal: 34,
+        paddingHorizontal: 20,
         borderRadius: 8,
         elevation: 3,
-        backgroundColor: '#EE6B4D',
         marginVertical: 20,
     },
 
