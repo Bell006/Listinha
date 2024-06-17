@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Link } from "expo-router";
+import { H1 } from "../components/H1";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function Index() {
@@ -15,9 +16,7 @@ export default function Index() {
         paddingHorizontal: 20
       }}
     >
-      <Text style={styles.text}>
-        Bora ali, fazer umas compras?
-      </Text>
+      <H1 title={'Bora ali, fazer umas compras?'}/>
       <Link href="/newList" asChild>
         <Pressable style={styles.addButton}>
           <Icon name="control-point" size={30} color="#DFFBFC"/>
@@ -71,15 +70,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#DFFBFC',
-  },
-
-
-  text: {
-      width: '100%',
-      fontSize: 45,
-      fontWeight: 'bold',
-      color: '#FFFDEA',
-      marginBottom: 20
   },
 
   textDate: {

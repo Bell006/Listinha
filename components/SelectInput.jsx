@@ -1,5 +1,5 @@
 import {React, useState} from "react";
-import {SafeAreaView, StyleSheet} from "react-native";
+import {Text, SafeAreaView, StyleSheet} from "react-native";
 import DropdownSelect from 'react-native-input-select';
 
 export function SelectInput({placeholder, type, ...rest}) {
@@ -55,7 +55,7 @@ export function SelectInput({placeholder, type, ...rest}) {
 
 const styles = StyleSheet.create({
     container: {
-        width: '80%'
+        width: '100%'
     },
 
     dropdownStyle: {
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
         height: 48,
         marginVertical: 12,
         borderRadius: 8,
-    }
+    },
 
 })
