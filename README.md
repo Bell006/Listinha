@@ -8,7 +8,6 @@ Bem-vindo à **Listinha**! Este aplicativo foi desenvolvido para facilitar a sua
 - [Recursos](#recursos)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Contribuição](#contribuição)
-- [Licença](#licença)
 
 ## Visão Geral
 
@@ -37,12 +36,10 @@ Contribuições são bem-vindas! Se você deseja contribuir com melhorias ou cor
 4. Envie para o branch (`git push origin feature/nova-feature`).
 5. Crie um novo Pull Request.
 
-## Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto foi pensado para a última etapa do curso CS50', da Universidade de Harvard.
 
 ---
 
-Esperamos que você aproveite a **Listinha** e que ela torne suas compras mais organizadas e eficientes! Se tiver alguma dúvida ou sugestão, entre em contato. 
+Espero que você aproveite a **Listinha** e que ela torne suas compras mais organizadas e eficientes! Se tiver alguma dúvida ou sugestão, entre em contato. 
 
 Boas compras! 🛒
