@@ -1,12 +1,12 @@
-import {React} from "react";
-import { SafeAreaView, StyleSheet, Pressable, Text, View} from "react-native";
+import { React } from "react";
+import { SafeAreaView, StyleSheet, Pressable, Text, View } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export function MainButton({title, add, color, icon, ...rest}) {
+export function MainButton({ title, add, color, icon, ...rest }) {
 
-    return(
+    return (
         <SafeAreaView style={[add ? styles.add : styles.container]}>
-            <Pressable 
+            <Pressable
                 style={[
                     styles.button,
                     add && styles.addButton,

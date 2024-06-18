@@ -1,12 +1,12 @@
-import {React, useState} from "react";
+import { React, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { StyleSheet, Text, View, Pressable} from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 import IconTrash from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function ListItem({title, checkBox, icon, index, ...rest}) {
+export function ListItem({ title, checkBox, icon, index, onPress, ...rest }) {
     const [isChecked, setIsChecked] = useState(false);
-    
-    return(
+
+    return (
         <View style={[styles.container, index % 2 === 0 ? styles.even : styles.odd]}>
             {checkBox && (
                 <BouncyCheckbox
@@ -14,8 +14,10 @@ export function ListItem({title, checkBox, icon, index, ...rest}) {
                     onPress={(checked) => setIsChecked(checked)}
                     text={title}
                     fillColor="#EE6B4D"
-                    textStyle={{ fontSize: 20,
-                    color: '#FFFDEA'}}
+                    textStyle={{
+                        fontSize: 20,
+                        color: '#FFFDEA'
+                    }}
                 />
             )}
             {icon && (
@@ -23,12 +25,12 @@ export function ListItem({title, checkBox, icon, index, ...rest}) {
                     <Text style={styles.text} {...rest}>
                         {title}
                     </Text>
-                    <Pressable>
+                    <Pressable onPress={onPress}>
                         <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
                     </Pressable>
                 </View>
             )}
-        </View>  
+        </View>
     );
 };
 

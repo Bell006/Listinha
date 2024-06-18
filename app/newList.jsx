@@ -1,5 +1,7 @@
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Link } from "expo-router";
+import { Link, router, useLocalSearchParams, useNavigation } from "expo-router";
+import { useState, useEffect } from "react";
+import { ShowAlert } from "../components/Alert";
 import { H1 } from "../components/H1";
 import { MainButton } from "../components/Button";
 import { ListItem } from "../components/ListItem";
@@ -8,9 +10,146 @@ import { SelectInput } from "../components/SelectInput";
 import { Input } from "../components/Input";
 import IconTrash from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function newList() {
-  const items = ['Batata', 'Cenoura', 'Tomate', 'Alface', 'Pepino'];
+  const navigation = useNavigation();
+  const params = useLocalSearchParams();
+  const { listTitle: listTitleEdit } = params;
+
+  const [tempItems, setTempItems] = useState([]);
+  const [tempCategory, setTempCategory] = useState('');
+  const [inputText, setInputText] = useState('');
+  const [savedItems, setSavedItems] = useState([]);
+  const [listTitle, setListTitle] = useState('');
+
+  const handleAddItem = () => {
+    if (inputText.trim()) {
+      setTempItems([...tempItems, inputText]);
+      setInputText('');
+    }
+  };
+
+  const handleSelectCategory = (selectedCategory) => {
+    setTempCategory(selectedCategory);
+  };
+
+  const handleAdd = () => {
+    if (tempCategory && tempItems.length > 0) {
+      const categoryIndex = savedItems.findIndex(entry => entry[0] === tempCategory);
+      if (categoryIndex !== -1) {
+        // Existing category
+        const updatedItems = [...savedItems];
+        updatedItems[categoryIndex] = [...updatedItems[categoryIndex], ...tempItems];
+        setSavedItems(updatedItems);
+      } else {
+        // New category
+        const newEntry = [tempCategory, ...tempItems];
+        setSavedItems([...savedItems, newEntry]);
+      }
+      setTempItems([]);
+      setTempCategory('');
+    }
+  };
+
+  const handleRemoveItem = (entryIndex, itemIndex, isTemp = false) => {
+    if (isTemp) {
+      const newTempItems = [...tempItems];
+      newTempItems.splice(itemIndex, 1);
+      setTempItems(newTempItems);
+    } else {
+      const newSavedItems = [...savedItems];
+      newSavedItems[entryIndex].splice(itemIndex + 1, 1);
+      if (newSavedItems[entryIndex].length === 1) {
+        newSavedItems.splice(entryIndex, 1);
+      }
+      setSavedItems(newSavedItems);
+    }
+  };
+
+  const handleRemoveCategory = (entryIndex) => {
+    const newSavedItems = savedItems.filter((_, index) => index !== entryIndex);
+    setSavedItems(newSavedItems);
+  };
+
+  const handleTitleChange = async () => {
+    try {
+      if (listTitleEdit && listTitle !== listTitleEdit) {
+        await AsyncStorage.removeItem(listTitleEdit);
+      }
+      setListTitle(listTitle);
+    } catch (e) {
+      console.error('Falha ao atualizar o título da lista.', e);
+      ShowAlert('Erro', 'Falha ao atualizar o título da lista.');
+    }
+  };
+
+  const mergeItems = (existingItems, newItems) => {
+    newItems.forEach(newEntry => {
+      const category = newEntry[0];
+      const items = newEntry.slice(1);
+
+      const index = existingItems.findIndex(entry => entry[0] === category);
+      if (index !== -1) {
+        existingItems[index] = [category, ...items];
+      } else {
+        existingItems.push(newEntry);
+      }
+    });
+
+    return existingItems;
+  };
+
+  const handleSave = async () => {
+    if (listTitle.trim()) {
+      try {
+        if (!Array.isArray(savedItems)) {
+          throw new Error('savedItems não é um array válido');
+        }
+
+        let existingItems = [];
+
+        // Verify if title already exists
+        const savedItemsJson = await AsyncStorage.getItem(listTitle);
+        if (savedItemsJson !== null) {
+          // if so, update
+          existingItems = JSON.parse(savedItemsJson);
+        }
+
+        const updatedItems = mergeItems(existingItems, savedItems);
+
+        // Saving updated items
+        await AsyncStorage.setItem(listTitle, JSON.stringify(updatedItems));
+
+        ShowAlert('Sucesso', 'Lista salva com sucesso!');
+
+        navigation.navigate('list', { listTitle });
+      } catch (e) {
+        console.error('Falha ao salvar a lista.', e);
+        ShowAlert('Erro', 'Falha ao salvar a lista. Tente novamente.');
+      }
+    } else {
+      ShowAlert('Aviso', 'Por favor, forneça um título para a lista.');
+    }
+  };
+
+  useEffect(() => {
+    const fetchListItems = async () => {
+      try {
+        if (listTitleEdit) {
+          const savedItemsJson = await AsyncStorage.getItem(listTitleEdit);
+          if (savedItemsJson !== null) {
+            setSavedItems(JSON.parse(savedItemsJson));
+          }
+        }
+      } catch (e) {
+        console.error('Falha ao carregar listas.', e);
+        ShowAlert('Erro', 'Falha ao carregar suas listas.');
+      }
+    };
+
+    fetchListItems();
+  }, [listTitleEdit]);
 
   return (
     <View
@@ -24,57 +163,68 @@ export default function newList() {
     >
       <Link href='/' asChild>
         <Pressable>
-          <Icon name="arrow-back" size={30} color="#EE6B4D" style={styles.icon}/>
+          <Icon name="arrow-back" size={30} color="#EE6B4D" style={styles.icon} />
         </Pressable>
       </Link>
-      <H1 title={'O que vai ser hoje?'}/>
+      <H1 title={'O que vai ser hoje?'} />
 
       <ScrollView>
         <Text style={styles.labelText}>
-            Categoria:
+          Dê um nome para sua listinha:
         </Text>
-        <SelectInput/>
-        <Text style={styles.labelText}>
-              Itens:
-        </Text>
+        <Input placeholder={listTitleEdit ? listTitleEdit : "Ex: Mercado"}
+          value={listTitle}
+          onChangeText={setListTitle}
+          onBlur={handleTitleChange}
+        />
 
-        <Input icon placeholder="Ex: Leite"/>
+        <Text style={styles.labelText}>
+          Categoria:
+        </Text>
+        <SelectInput value={tempCategory} onChange={handleSelectCategory} />
+
+        <Text style={styles.labelText}>
+          Itens:
+        </Text>
+        <Input icon placeholder="Ex: Leite"
+          value={inputText}
+          onChangeText={setInputText}
+          onPress={handleAddItem}
+        />
+
         <View style={styles.badgeWrapper}>
-          <View style={styles.badge}>
-            <Text>Batata</Text>
-            <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-          </View>
-          <View style={styles.badge}>
-            <Text>Batata</Text>
-            <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-          </View>
-          <View style={styles.badge}>
-            <Text>Batata</Text>
-            <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-          </View>
-          <View style={styles.badge}>
-            <Text>Batata</Text>
-            <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-          </View>
-          <View style={styles.badge}>
-            <Text>Batata</Text>
-            <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-          </View>
+          {tempItems.map((item, index) => (
+            <View style={styles.badge} key={index}>
+              <Text>{item}</Text>
+              <Pressable onPress={() => handleRemoveItem(null, index, true)}>
+                <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
+              </Pressable>
+            </View>
+          ))}
         </View>
 
-        <MainButton title='Adicionar' add color='#FFFDEA'/>
+        <MainButton add title='Adicionar' color='#FFFDEA' onPress={handleAdd} />
 
-        <Category title='Frutas e verduras' icon/>
-        {items.map((item, index) => (
-          <ListItem key={index} title={item} icon index={index} />
-        ))}
 
-      <MainButton title='Salvar' color='#EE6B4D'/>
+        {savedItems.length === 0 ? (
+          <Text style={styles.emptyText}>Escolha uma categoria e adicione itens para começar!</Text>
+        ) : (
+          savedItems.map((entry, entryIndex) => (
+            <View key={entryIndex} style={styles.categoryWrapper}>
+              <Category title={entry[0]} icon onPress={() => handleRemoveCategory(entryIndex)} />
+              {entry.slice(1).map((item, itemIndex) => (
+                <ListItem key={itemIndex} title={item} icon onPress={() => handleRemoveItem(entryIndex, itemIndex)} />
+              ))}
+            </View>
+          ))
+        )}
+
+        <MainButton title='Salvar' color='#EE6B4D' onPress={handleSave} />
       </ScrollView>
 
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   icon: {
@@ -106,5 +256,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginVertical: 8
+  },
+
+  emptyText: {
+    borderLeftWidth: 5,
+    borderLeftColor: '#FFFDEA',
+    marginVertical: 16,
+    width: '90%',
+    padding: 20,
+    fontSize: 20,
+    color: '#DFFBFC'
   }
 });
