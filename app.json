@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "listinha",
+    "name": "Listinha",
     "slug": "listinha",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,9 +17,9 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/images/icon.png"
+      },
+      "package": "com.bell006.listinha"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +31,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a5bf495e-d71c-4992-8d6e-4ab0f0e7ea06"
+      }
     }
   }
 }

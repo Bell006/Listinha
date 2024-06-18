@@ -157,7 +157,8 @@ export default function newList() {
         flex: 1,
         backgroundColor: "#293241",
         alignContent: 'center',
-        paddingVertical: 40,
+        paddingTop: 100,
+        paddingBottom: 20,
         paddingHorizontal: 20
       }}
     >

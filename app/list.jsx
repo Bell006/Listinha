@@ -75,7 +75,8 @@ export default function list() {
                 backgroundColor: "#293241",
                 alignContent: 'center',
                 justifyContent: 'center',
-                paddingVertical: 40,
+                paddingTop: 100,
+                paddingBottom: 20,
                 paddingHorizontal: 20
             }}
         >

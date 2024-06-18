@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxHeight: 340,
     flexWrap: 'wrap',
+    marginTop: 30,
   },
 
   scroll: {
