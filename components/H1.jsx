@@ -4,7 +4,7 @@ import { StyleSheet, Text} from "react-native";
 export function H1({title, ...rest}) {
 
     return(
-        <Text style={styles.text} {...rest}>
+        <Text style={styles.text} adjustsFontSizeToFit numberOfLines={2}{...rest}>
             {title}
         </Text>
     );

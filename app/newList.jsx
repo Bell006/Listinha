@@ -121,8 +121,6 @@ export default function newList() {
         // Saving updated items
         await AsyncStorage.setItem(listTitle, JSON.stringify(updatedItems));
 
-        ShowAlert('Sucesso', 'Lista salva com sucesso!');
-
         navigation.navigate('list', { listTitle });
       } catch (e) {
         console.error('Falha ao salvar a lista.', e);
@@ -187,10 +185,10 @@ export default function newList() {
         <Text style={styles.labelText}>
           Itens:
         </Text>
-        <Input icon placeholder="Ex: Leite"
+        <Input placeholder="Ex: Leite"
           value={inputText}
           onChangeText={setInputText}
-          onPress={handleAddItem}
+          onSubmitEditing={handleAddItem}
         />
 
         <View style={styles.badgeWrapper}>
@@ -208,7 +206,7 @@ export default function newList() {
 
 
         {savedItems.length === 0 ? (
-          <Text style={styles.emptyText}>Escolha uma categoria e adicione itens para começar!</Text>
+          <Text style={styles.emptyText} adjustsFontSizeToFit numberOfLines={2}>Escolha uma categoria e adicione itens para começar!</Text>
         ) : (
           savedItems.map((entry, entryIndex) => (
             <View key={entryIndex} style={styles.categoryWrapper}>

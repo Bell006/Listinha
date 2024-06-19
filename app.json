@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splashIcon.png",
-      "resizeMode": "center",
+      "resizeMode": "contain",
       "backgroundColor": "#293241"
     },
     "ios": {
@@ -39,6 +39,12 @@
       "eas": {
         "projectId": "a5bf495e-d71c-4992-8d6e-4ab0f0e7ea06"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a5bf495e-d71c-4992-8d6e-4ab0f0e7ea06"
     }
   }
 }

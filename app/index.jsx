@@ -58,7 +58,7 @@ export default function Index() {
       <View style={styles.scrollViewContainer}>
         <ScrollView style={styles.scroll}>
           {savedListsTitles.length === 0 ? (
-            <Text style={styles.textItemNone}>Por enquanto você não possui nenhuma listinha :(</Text>
+            <Text style={styles.textItemNone} adjustsFontSizeToFit numberOfLines={2}>Por enquanto você não possui nenhuma listinha :(</Text>
           ) : (
             savedListsTitles.map((listTitle, index) => (
               <Pressable style={styles.item} key={index} onPress={() => handleListNavigation(listTitle)}>

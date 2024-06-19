@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { Pressable, SafeAreaView, StyleSheet, TextInput } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function Input({ placeholder, type, icon, onPress, ...rest }) {
+export function Input({ placeholder, type, icon, onPress, onSubmitEditing, ...rest }) {
 
     const [isFocused, setIsFocused] = useState(false);
 
@@ -25,6 +25,7 @@ export function Input({ placeholder, type, icon, onPress, ...rest }) {
                 placeholderTextColor="#B9B9B9"
                 onFocus={handleOnFocus}
                 onBlur={handleBlur}
+                onSubmitEditing={onSubmitEditing}
                 {...rest}
             />
             {icon && (
