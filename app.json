@@ -2,7 +2,7 @@
   "expo": {
     "name": "Listinha",
     "slug": "listinha",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptiveIcon.png"
       },
-      "package": "com.bell006.listinha"
+      "package": "com.bell006.listinha",
+      "versionCode": 4
     },
     "web": {
       "bundler": "metro",
@@ -44,6 +45,8 @@
       "policy": "appVersion"
     },
     "updates": {
+      "fallbackToCacheTimeout": 0,
+      "enabled": true,
       "url": "https://u.expo.dev/a5bf495e-d71c-4992-8d6e-4ab0f0e7ea06"
     }
   }

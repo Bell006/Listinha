@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Link, useNavigation } from "expo-router";
+import * as Updates from "expo-updates";
 import { useState, useEffect } from "react";
 import { ShowAlert } from "../components/Alert";
 import { H1 } from "../components/H1";
@@ -11,6 +12,16 @@ export default function Index() {
 
   const [savedListsTitles, setSavedListsTitles] = useState([]);
 
+  
+  const handleListNavigation = (listTitle) => {
+    try {
+      navigation.navigate('list', { listTitle });
+    } catch (e) {
+      console.error('Erro ao navegar para a lista.', e);
+      ShowAlert('Erro', 'Erro ao navegar para a lista.');
+    }
+  };
+  
   useEffect(() => {
     const fetchSavedListsTitles = async () => {
       try {
@@ -26,14 +37,17 @@ export default function Index() {
     fetchSavedListsTitles();
   }, [savedListsTitles]);
 
-  const handleListNavigation = (listTitle) => {
-    try {
-      navigation.navigate('list', { listTitle });
-    } catch (e) {
-      console.error('Erro ao navegar para a lista.', e);
-      ShowAlert('Erro', 'Erro ao navegar para a lista.');
+  useEffect(() => {
+    async function updateApp() {
+      const { isAvailable } = await Updates.checkForUpdateAsync();
+      if (isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync(); 
+      }
     }
-  };
+    updateApp();
+  }, []);
+
 
   return (
     <View
