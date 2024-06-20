@@ -48,7 +48,6 @@ export default function Index() {
     updateApp();
   }, []);
 
-
   return (
     <View
       style={{
