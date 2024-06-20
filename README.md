@@ -1,5 +1,40 @@
 # Listinha
 
+Welcome to **Listinha**! This application was developed to enhance your shopping experience by allowing you to create, manage, and store your grocery lists in a practical and efficient manner.
+
+## Content
+
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies](#technologies)
+
+## Overview
+
+**Listinha** is a mobile application developed with React Native, offering an intuitive interface for creating, editing, and managing your shopping lists. With the use of react-async-storage, your data is securely stored and accessible at any time.
+
+## Features
+
+- **List creation:** Easily add new shopping lists.
+- **Item editing:** Edit items in your lists as needed.
+- **Mark as Purchased:** Mark items as purchased to keep track of what has been bought.
+- **Persistent Storage:** Your lists are stored locally on the device, ensuring offline access.
+- **Intuitive Interface:** Simple navigation and user-friendly design.
+
+## Technologies
+
+- [React Native](https://reactnative.dev/) - The main framework for app development.
+- [React Async Storage](https://react-native-async-storage.github.io/async-storage/) - Used for local data storage.
+
+I hope you enjoy **Listinha** and that it makes your shopping more organized and efficient! If you have any questions or suggestions, feel free to contact.
+
+Happy shopping! 🛒
+
+_This project was designed for the final stage of the CS50x course, from Harvard University._
+
+---
+
+# Listinha
+
 Bem-vindo à **Listinha**! Este aplicativo foi desenvolvido para facilitar a sua experiência de compras, permitindo criar, gerenciar e armazenar suas listas de supermercado de maneira prática e eficiente.
 
 ## Índice
@@ -7,7 +42,6 @@ Bem-vindo à **Listinha**! Este aplicativo foi desenvolvido para facilitar a sua
 - [Visão Geral](#visão-geral)
 - [Recursos](#recursos)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Contribuição](#contribuição)
 
 ## Visão Geral
 
@@ -26,17 +60,7 @@ O **Listinha** é uma aplicação móvel desenvolvida com React Native, que ofer
 - [React Native](https://reactnative.dev/) - Framework principal para o desenvolvimento do aplicativo.
 - [React Async Storage](https://react-native-async-storage.github.io/async-storage/) - Utilizado para armazenamento local de dados.
 
-## Contribuição
-
-Contribuições são bem-vindas! Se você deseja contribuir com melhorias ou correções, por favor siga os passos abaixo:
-
-1. Faça um fork deste repositório.
-2. Crie uma branch para sua feature ou correção (`git checkout -b feature/nova-feature`).
-3. Commit suas alterações (`git commit -am 'Adiciona nova feature'`).
-4. Envie para o branch (`git push origin feature/nova-feature`).
-5. Crie um novo Pull Request.
-
-Este projeto foi pensado para a última etapa do curso CS50', da Universidade de Harvard.
+_Este projeto foi pensado para a última etapa do curso CS50x, da Universidade de Harvard._
 
 ---
 
