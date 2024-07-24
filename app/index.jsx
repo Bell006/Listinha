@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { Link, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import * as Updates from "expo-updates";
 import { useState, useEffect } from "react";
 import { ShowAlert } from "../components/Alert";
@@ -12,7 +12,6 @@ export default function Index() {
 
   const [savedListsTitles, setSavedListsTitles] = useState([]);
 
-  
   const handleListNavigation = (listTitle) => {
     try {
       navigation.navigate('list', { listTitle });
@@ -61,12 +60,10 @@ export default function Index() {
       }}
     >
       <H1 title={'Bora ali, fazer umas compras?'} />
-      <Link href="/newList" asChild>
-        <Pressable style={styles.addButton}>
-          <Icon name="control-point" size={30} color="#DFFBFC" />
-          <Text style={styles.addText}>Nova listinha</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={styles.addButton} onPress={() => handleListNavigation('')}>
+        <Icon name="control-point" size={30} color="#DFFBFC" />
+        <Text style={styles.addText}>Nova listinha</Text>
+      </Pressable>
 
       <View style={styles.scrollViewContainer}>
         <ScrollView style={styles.scroll}>
@@ -74,7 +71,11 @@ export default function Index() {
             <Text style={styles.textItemNone} adjustsFontSizeToFit numberOfLines={2}>Por enquanto você não possui nenhuma listinha :(</Text>
           ) : (
             savedListsTitles.map((listTitle, index) => (
-              <Pressable style={styles.item} key={index} onPress={() => handleListNavigation(listTitle)}>
+              <Pressable
+                style={styles.item}
+                key={index}
+                onPress={() => handleListNavigation(listTitle)}
+              >
                 <Text style={styles.textItem}>{listTitle}</Text>
               </Pressable>
             ))

@@ -2,7 +2,7 @@ import { React } from "react";
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import IconTrash from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function Category({ title, icon, onPress, ...rest }) {
+export function Category({ title, icon, onPress, onDelete, ...rest }) {
 
     return (
         <View style={styles.container}>
@@ -10,8 +10,8 @@ export function Category({ title, icon, onPress, ...rest }) {
                 {title}
             </Text>
             {icon && (
-                <Pressable onPress={onPress}>
-                    <IconTrash name="trash-can-outline" size={28} color="#EE6B4D" />
+                <Pressable onPress={onDelete}>
+                    <IconTrash name="trash-can-outline" size={15} color="#EE6B4D" />
                 </Pressable>
             )}
         </View>
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         marginTop: 16,
         justifyContent: 'space-between',
+        width: '100%'
     },
 
     text: {

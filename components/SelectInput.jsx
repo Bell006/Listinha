@@ -2,18 +2,19 @@ import { React } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import DropdownSelect from 'react-native-input-select';
 
-export function SelectInput({ placeholder, type, value, onChange, ...rest }) {
+export function SelectInput({ placeholder, type, value, onChange}) {
 
     return (
         <SafeAreaView style={styles.container}>
             <DropdownSelect
-                placeholder="Selecione a categoria"
+                placeholder="Nova categoria         +"
                 dropdownStyle={styles.dropdownStyle}
+                dropdownIcon={() => null}
                 placeholderStyle={{
-                    color: "#B9B9B9"
+                    color: "white"
                 }}
                 selectedItemStyle={{
-                    color: 'white'
+                    color: 'white',
                 }}
                 modalControls={{
                     modalOptionsContainerStyle: {
@@ -56,14 +57,17 @@ export function SelectInput({ placeholder, type, value, onChange, ...rest }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%'
+        width: '55%',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        margin: 0
     },
 
     dropdownStyle: {
-        backgroundColor: '#0B1321',
-        height: 48,
-        marginVertical: 12,
-        borderRadius: 8,
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderColor: '#DFFBFC',
+        marginTop: 8
     },
 
 })
