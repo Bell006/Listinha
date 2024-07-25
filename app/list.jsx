@@ -7,19 +7,28 @@ import { Category } from "../components/Category";
 import { SelectInput } from "../components/SelectInput";
 import { ListItem } from "../components/ListItem";
 import { MainButton } from "../components/Button";
+import { handleUnnamedList } from '../utils/handleUnnamedList';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function list() {
+
+    
     const navigation = useNavigation();
     const params = useLocalSearchParams();
     const { listTitle: initialListTitle } = params;
-
+    
     const [listTitle, setListTitle] = useState(initialListTitle || '');
     const [listItems, setListItems] = useState([]);
     const [creationDate, setCreationDate] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
 
     const handleCategoryChange = async (category) => {
+        //Creating list title if doesn't exists
+        if (listTitle == '') {
+            const newTitle = await handleUnnamedList();
+            setListTitle(newTitle);
+        }
+
         if (listItems.some(item => item[0] === category)) {
             setSelectedCategory('');
             return;
@@ -31,7 +40,9 @@ export default function list() {
         setSelectedCategory('');
 
         try {
-            await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
+            if (listTitle !== '') {
+                await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
+            }
         } catch (e) {
             console.error('Falha ao salvar a lista.', e);
             ShowAlert('Erro', 'Falha ao salvar a lista.');
@@ -55,6 +66,7 @@ export default function list() {
                     onPress: async () => {
                         try {
                             await AsyncStorage.removeItem(listTitle);
+                            await AsyncStorage.removeItem(`${listTitle}_date`);
                             navigation.navigate('index');
                             console.log('Lista deletada');
                         } catch (e) {
@@ -69,17 +81,17 @@ export default function list() {
 
     const handleTitleChange = async (newTitle) => {
         try {
-            if (initialListTitle && initialListTitle !== newTitle) {
+            if (initialListTitle && initialListTitle !== newTitle && newTitle !== '') {
                 const savedItemsJson = await AsyncStorage.getItem(initialListTitle);
                 if (savedItemsJson !== null) {
                     await AsyncStorage.removeItem(initialListTitle);
                     await AsyncStorage.setItem(newTitle, savedItemsJson);
                     await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
                 }
-            } else if (!initialListTitle) {
+            } else if (!initialListTitle && newTitle !== '') {
                 await AsyncStorage.setItem(newTitle, JSON.stringify(listItems));
                 await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
-            }
+            } 
         } catch (e) {
             console.error('Falha ao atualizar o título da lista.', e);
             ShowAlert('Erro', 'Falha ao atualizar o título da lista.');
@@ -143,7 +155,7 @@ export default function list() {
     useEffect(() => {
         const fetchListItems = async () => {
             try {
-                if (initialListTitle) {
+                if (initialListTitle != '') {
                     const savedItemsJson = await AsyncStorage.getItem(initialListTitle);
                     if (savedItemsJson !== null) {
                         setListItems(JSON.parse(savedItemsJson));
@@ -239,7 +251,7 @@ const styles = StyleSheet.create({
 
     titleInput: {
         width: '100%',
-        fontSize: 45,
+        fontSize: 36,
         fontWeight: 'bold',
         color: '#FFFDEA',
         marginBottom: 4

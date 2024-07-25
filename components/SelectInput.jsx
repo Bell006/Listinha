@@ -9,7 +9,7 @@ export function SelectInput({value, onChange}) {
             <DropdownSelect
                 placeholder="Nova categoria         +"
                 dropdownStyle={styles.dropdownStyle}
-                dropdownIcon={() => <></>}
+                dropdownIconStyle={{ opacity: 0 }}
                 placeholderStyle={{
                     color: "white"
                 }}
