@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import { useNavigation } from "expo-router";
-import * as Updates from "expo-updates";
 import { useState, useEffect } from "react";
 import { ShowAlert } from "../components/Alert";
 import { H1 } from "../components/H1";
@@ -25,8 +24,8 @@ export default function Index() {
     const fetchSavedListsTitles = async () => {
       try {
         const allKeys = await AsyncStorage.getAllKeys();
-
-        setSavedListsTitles(allKeys);
+        const filteredKeys = allKeys.filter(key => !key.endsWith('_date'));
+        setSavedListsTitles(filteredKeys);
       } catch (e) {
         console.error('Falha ao carregar listas.', e);
         ShowAlert('Erro', 'Falha ao carregar suas listas.');
@@ -35,17 +34,6 @@ export default function Index() {
 
     fetchSavedListsTitles();
   }, [savedListsTitles]);
-
-  useEffect(() => {
-    async function updateApp() {
-      const { isAvailable } = await Updates.checkForUpdateAsync();
-      if (isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync(); 
-      }
-    }
-    updateApp();
-  }, []);
 
   return (
     <View

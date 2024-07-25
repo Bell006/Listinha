@@ -71,15 +71,13 @@ export default function list() {
         try {
             if (initialListTitle && initialListTitle !== newTitle) {
                 const savedItemsJson = await AsyncStorage.getItem(initialListTitle);
-                await AsyncStorage.removeItem(initialListTitle);
-                await AsyncStorage.setItem(newTitle, savedItemsJson);
-
-            } else if (!initialListTitle) {
-                if (newTitle == ''){
-                    await AsyncStorage.setItem('Listinha', JSON.stringify(listItems));
-                } else {
-                    await AsyncStorage.setItem(newTitle, JSON.stringify(listItems));
+                if (savedItemsJson !== null) {
+                    await AsyncStorage.removeItem(initialListTitle);
+                    await AsyncStorage.setItem(newTitle, savedItemsJson);
+                    await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
                 }
+            } else if (!initialListTitle) {
+                await AsyncStorage.setItem(newTitle, JSON.stringify(listItems));
                 await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
             }
         } catch (e) {
@@ -188,13 +186,13 @@ export default function list() {
             <View style={styles.header}>
                 <Text style={styles.textSub}>Listinha</Text>
                 <TextInput
-                style={styles.titleInput}
-                placeholderTextColor="#B9B9B9"
-                placeholder="Defina seu título"
-                adjustsFontSizeToFit
-                value={listTitle}
-                onChangeText={setListTitle}
-                onBlur={() => handleTitleChange(listTitle)}
+                    style={styles.titleInput}
+                    placeholderTextColor="#B9B9B9"
+                    placeholder="Defina seu título"
+                    adjustsFontSizeToFit
+                    value={listTitle}
+                    onChangeText={setListTitle}
+                    onBlur={() => handleTitleChange(listTitle)}
                 />
                 <Text style={styles.creationDate}>{creationDate}</Text>
             </View>
@@ -208,26 +206,26 @@ export default function list() {
 
             <ScrollView style={styles.scroll}>
                 {listItems.map((categoryItems, categoryIndex) => (
-                        <View key={categoryIndex}>
-                            <Category title={categoryItems[0]} icon onDelete={() => handleDelete(categoryIndex)} />
-                            {categoryItems.slice(1).map((item, itemIndex) => (
-                                <ListItem
-                                    key={itemIndex}
-                                    title={item}
-                                    checkBox
-                                    isEditable={item === ''}
-                                    index={itemIndex}
-                                    onPress={() => {}}
-                                    onEndEditing={(newItem) => handleItemChange(categoryIndex, itemIndex + 1, newItem)}
-                                    onDelete={() => handleDelete(categoryIndex, itemIndex)}
-                                    icon
-                                />
-                            ))}
-                            <Pressable onPress={() => handleAddItem(categoryIndex)} style={styles.newItemButton}>
-                                <Icon name="control-point" size={30} color="#DFFBFC" />
-                            </Pressable>
-                        </View>
-                    ))}
+                    <View key={categoryIndex}>
+                        <Category title={categoryItems[0]} icon onDelete={() => handleDelete(categoryIndex)} />
+                        {categoryItems.slice(1).map((item, itemIndex) => (
+                            <ListItem
+                                key={itemIndex}
+                                title={item}
+                                checkBox
+                                isEditable={item === ''}
+                                index={itemIndex}
+                                onPress={() => { }}
+                                onEndEditing={(newItem) => handleItemChange(categoryIndex, itemIndex + 1, newItem)}
+                                onDelete={() => handleDelete(categoryIndex, itemIndex)}
+                                icon
+                            />
+                        ))}
+                        <Pressable onPress={() => handleAddItem(categoryIndex)} style={styles.newItemButton}>
+                            <Icon name="control-point" size={30} color="#DFFBFC" />
+                        </Pressable>
+                    </View>
+                ))}
             </ScrollView>
         </View>
     );

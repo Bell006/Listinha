@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     },
 
     even: {
-        background: 'none',
+        backgroundColor: 'none',
     },
 
     odd: {

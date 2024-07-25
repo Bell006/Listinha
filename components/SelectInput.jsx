@@ -2,14 +2,14 @@ import { React } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import DropdownSelect from 'react-native-input-select';
 
-export function SelectInput({ placeholder, type, value, onChange}) {
+export function SelectInput({value, onChange}) {
 
     return (
         <SafeAreaView style={styles.container}>
             <DropdownSelect
                 placeholder="Nova categoria         +"
                 dropdownStyle={styles.dropdownStyle}
-                dropdownIcon={() => null}
+                dropdownIcon={() => <></>}
                 placeholderStyle={{
                     color: "white"
                 }}
@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderColor: '#DFFBFC',
-        marginTop: 8
+        marginTop: 8,
+        width: 190
     },
 
 })
