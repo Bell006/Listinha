@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { Link, useNavigation } from "expo-router";
-import * as Updates from "expo-updates";
+import { useNavigation } from "expo-router";
 import { useState, useEffect } from "react";
 import { ShowAlert } from "../components/Alert";
 import { H1 } from "../components/H1";
@@ -12,7 +11,6 @@ export default function Index() {
 
   const [savedListsTitles, setSavedListsTitles] = useState([]);
 
-  
   const handleListNavigation = (listTitle) => {
     try {
       navigation.navigate('list', { listTitle });
@@ -26,8 +24,8 @@ export default function Index() {
     const fetchSavedListsTitles = async () => {
       try {
         const allKeys = await AsyncStorage.getAllKeys();
-
-        setSavedListsTitles(allKeys);
+        const filteredKeys = allKeys.filter(key => !key.endsWith('_date'));
+        setSavedListsTitles(filteredKeys);
       } catch (e) {
         console.error('Falha ao carregar listas.', e);
         ShowAlert('Erro', 'Falha ao carregar suas listas.');
@@ -36,18 +34,6 @@ export default function Index() {
 
     fetchSavedListsTitles();
   }, [savedListsTitles]);
-
-  useEffect(() => {
-    async function updateApp() {
-      const { isAvailable } = await Updates.checkForUpdateAsync();
-      if (isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync(); 
-      }
-    }
-    updateApp();
-  }, []);
-
 
   return (
     <View
@@ -62,12 +48,10 @@ export default function Index() {
       }}
     >
       <H1 title={'Bora ali, fazer umas compras?'} />
-      <Link href="/newList" asChild>
-        <Pressable style={styles.addButton}>
-          <Icon name="control-point" size={30} color="#DFFBFC" />
-          <Text style={styles.addText}>Nova listinha</Text>
-        </Pressable>
-      </Link>
+      <Pressable style={styles.addButton} onPress={() => handleListNavigation('')}>
+        <Icon name="control-point" size={30} color="#DFFBFC" />
+        <Text style={styles.addText}>Nova listinha</Text>
+      </Pressable>
 
       <View style={styles.scrollViewContainer}>
         <ScrollView style={styles.scroll}>
@@ -75,7 +59,11 @@ export default function Index() {
             <Text style={styles.textItemNone} adjustsFontSizeToFit numberOfLines={2}>Por enquanto você não possui nenhuma listinha :(</Text>
           ) : (
             savedListsTitles.map((listTitle, index) => (
-              <Pressable style={styles.item} key={index} onPress={() => handleListNavigation(listTitle)}>
+              <Pressable
+                style={styles.item}
+                key={index}
+                onPress={() => handleListNavigation(listTitle)}
+              >
                 <Text style={styles.textItem}>{listTitle}</Text>
               </Pressable>
             ))

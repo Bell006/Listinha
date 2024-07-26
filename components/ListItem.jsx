@@ -1,34 +1,53 @@
 import { React, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { TextInput, StyleSheet, View, Pressable } from "react-native";
 import IconTrash from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function ListItem({ title, checkBox, icon, index, onPress, ...rest }) {
+export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, index, onPress, onDelete}) {
     const [isChecked, setIsChecked] = useState(false);
+    const [currentTitle, setCurrentTitle] = useState(title);
+    const [isEditing, setIsEditing] = useState(isEditable);
+
+    const handleEndEditing = () => {
+        if (currentTitle.trim() !== '') {
+            setIsEditing(false);
+            onEndEditing(currentTitle);
+        } else {
+            onEndEditing(null);
+        }
+    };
 
     return (
         <View style={[styles.container, index % 2 === 0 ? styles.even : styles.odd]}>
-            {checkBox && (
-                <BouncyCheckbox
-                    isChecked={isChecked}
-                    onPress={(checked) => setIsChecked(checked)}
-                    text={title}
-                    fillColor="#EE6B4D"
-                    textStyle={{
-                        fontSize: 20,
-                        color: '#FFFDEA'
-                    }}
+            {isEditing ? (
+                <TextInput
+                    style={styles.input}
+                    value={currentTitle}
+                    onChangeText={setCurrentTitle}
+                    onEndEditing={handleEndEditing}
+                    autoFocus
                 />
-            )}
-            {icon && (
-                <View style={styles.container}>
-                    <Text style={styles.text} {...rest}>
-                        {title}
-                    </Text>
-                    <Pressable onPress={onPress}>
-                        <IconTrash name="trash-can-outline" size={20} color="#EE6B4D" />
-                    </Pressable>
-                </View>
+            ) : (
+                <>
+                    {checkBox && (
+                        <BouncyCheckbox
+                            isChecked={isChecked}
+                            onPress={(checked) => setIsChecked(checked)}
+                            text={currentTitle}
+                            fillColor="#EE6B4D"
+                            width='90%'
+                            textStyle={{
+                                fontSize: 20,
+                                color: '#FFFDEA',
+                            }}
+                        />
+                    )}
+                    {icon && (
+                        <Pressable onPress={onDelete}>
+                            <IconTrash name="trash-can-outline" size={15} color="#EE6B4D" />
+                        </Pressable>
+                    )}
+                </>
             )}
         </View>
     );
@@ -36,7 +55,6 @@ export function ListItem({ title, checkBox, icon, index, onPress, ...rest }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -49,16 +67,17 @@ const styles = StyleSheet.create({
         color: '#DFFBFC',
     },
 
+    input: {
+        fontSize: 20,
+        color: '#FFFDEA',
+        padding: 8
+    },
+
     even: {
-        background: 'none',
+        backgroundColor: 'none',
     },
 
     odd: {
         backgroundColor: '#1A2537',
-    },
-
-    strikeThrough: {
-        textDecorationLine: 'line-through',
-        textDecorationStyle: 'solid',
     },
 })
