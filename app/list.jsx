@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, ScrollView, Pressable, TextInput } from "react-native";
 import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from "react";
 import { ShowAlert } from "../components/Alert";
 import { Category } from "../components/Category";
@@ -9,44 +8,71 @@ import { ListItem } from "../components/ListItem";
 import { MainButton } from "../components/Button";
 import { handleUnnamedList } from '../utils/handleUnnamedList';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { List } from '../models/List';
 
 export default function list() {
 
-    
     const navigation = useNavigation();
     const params = useLocalSearchParams();
     const { listTitle: initialListTitle } = params;
-    
+
     const [listTitle, setListTitle] = useState(initialListTitle || '');
-    const [listItems, setListItems] = useState([]);
-    const [creationDate, setCreationDate] = useState('');
+    const [list, setList] = useState(new List(initialListTitle || ''));
     const [selectedCategory, setSelectedCategory] = useState('');
 
     const handleCategoryChange = async (category) => {
-        //Creating list title if doesn't exists
-        if (listTitle == '') {
+        if (listTitle === '') {
             const newTitle = await handleUnnamedList();
             setListTitle(newTitle);
+            list.title = newTitle;
         }
+        list.addCategory(category);
+        setList(new List(list.title, list.items, list.date));
+        await list.save();
+    };
 
-        if (listItems.some(item => item[0] === category)) {
-            setSelectedCategory('');
-            return;
-        }
-
-        const newCategory = [category];
-        const updatedListItems = [...listItems, newCategory];
-        setListItems(updatedListItems);
-        setSelectedCategory('');
-
+    const handleTitleChange = async (newTitle) => {
         try {
-            if (listTitle !== '') {
-                await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
+            if (list.title !== newTitle && newTitle !== '') {
+                await list.delete();
+                list.title = newTitle;
+                setListTitle(newTitle);
+                await list.save();
             }
         } catch (e) {
-            console.error('Falha ao salvar a lista.', e);
-            ShowAlert('Erro', 'Falha ao salvar a lista.');
+            console.error('Falha ao atualizar o título da lista.', e);
+            ShowAlert('Erro', 'Falha ao atualizar o título da lista.');
         }
+    };
+
+    const handleAddItem = async (categoryIndex) => {
+        const category = list.items[categoryIndex][0];
+        list.addItem(category, '');
+        setList(new List(list.title, list.items, list.date));
+        await list.save();
+    };
+
+    const handleItemChange = async (categoryIndex, itemIndex, newItem) => {
+        const category = list.items[categoryIndex][0];
+        if (newItem === null || list.items[categoryIndex].includes(newItem)) {
+            list.removeItem(category, list.items[categoryIndex][itemIndex]);
+        } else {
+            list.items[categoryIndex][itemIndex] = newItem;
+        }
+        setList(new List(list.title, list.items, list.date));
+        await list.save();
+    };
+
+    const handleDelete = async (categoryIndex, itemIndex = null) => {
+        if (itemIndex === null) {
+            const category = list.items[categoryIndex][0];
+            list.removeCategory(category);
+        } else {
+            const category = list.items[categoryIndex][0];
+            list.removeItem(category, list.items[categoryIndex][itemIndex + 1]);
+        }
+        setList(new List(list.title, list.items, list.date));
+        await list.save();
     };
 
     const handleDeleteList = () => {
@@ -56,111 +82,28 @@ export default function list() {
             [
                 {
                     text: 'Não',
-                    onPress: () => {
-                        console.log('Cancelado');
-                    },
+                    onPress: () => console.log('Cancelado'),
                     style: 'cancel'
                 },
                 {
                     text: 'Sim',
                     onPress: async () => {
-                        try {
-                            await AsyncStorage.removeItem(listTitle);
-                            await AsyncStorage.removeItem(`${listTitle}_date`);
-                            navigation.navigate('index');
-                            console.log('Lista deletada');
-                        } catch (e) {
-                            console.error('Falha ao deletar a lista.', e);
-                            ShowAlert('Erro', 'Falha ao deletar a lista.');
-                        }
+                        await list.delete();
+                        navigation.navigate('index');
                     }
                 }
             ]
         );
     };
 
-    const handleTitleChange = async (newTitle) => {
-        try {
-            if (initialListTitle && initialListTitle !== newTitle && newTitle !== '') {
-                const savedItemsJson = await AsyncStorage.getItem(initialListTitle);
-                if (savedItemsJson !== null) {
-                    await AsyncStorage.removeItem(initialListTitle);
-                    await AsyncStorage.setItem(newTitle, savedItemsJson);
-                    await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
-                }
-            } else if (!initialListTitle && newTitle !== '') {
-                await AsyncStorage.setItem(newTitle, JSON.stringify(listItems));
-                await AsyncStorage.setItem(`${newTitle}_date`, new Date().toLocaleDateString());
-            } 
-        } catch (e) {
-            console.error('Falha ao atualizar o título da lista.', e);
-            ShowAlert('Erro', 'Falha ao atualizar o título da lista.');
-        }
-    };
-
-    const handleAddItem = (categoryIndex) => {
-        const updatedListItems = [...listItems];
-        updatedListItems[categoryIndex] = [...updatedListItems[categoryIndex], ''];
-        setListItems(updatedListItems);
-    };
-
-    const handleItemChange = async (categoryIndex, itemIndex, newItem) => {
-        const updatedListItems = [...listItems];
-        const categoryItems = updatedListItems[categoryIndex];
-
-        if (newItem === null || categoryItems.includes(newItem)) {
-            categoryItems.splice(itemIndex, 1);
-            setListItems(updatedListItems);
-
-            try {
-                await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
-            } catch (e) {
-                console.error('Falha ao atualizar a lista.', e);
-                ShowAlert('Erro', 'Falha ao atualizar a lista.');
-            }
-        } else {
-            categoryItems[itemIndex] = newItem;
-            setListItems(updatedListItems);
-
-            try {
-                await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
-            } catch (e) {
-                console.error('Falha ao atualizar a lista.', e);
-                ShowAlert('Erro', 'Falha ao atualizar a lista.');
-            }
-        }
-    };
-
-    const handleDelete = async (categoryIndex, itemIndex = null) => {
-        const updatedListItems = [...listItems];
-
-        if (itemIndex === null) {
-            // Deleting entire category
-            updatedListItems.splice(categoryIndex, 1);
-        } else {
-            // Deleting specific item
-            updatedListItems[categoryIndex].splice(itemIndex + 1, 1);
-        }
-
-        setListItems(updatedListItems);
-
-        try {
-            await AsyncStorage.setItem(listTitle, JSON.stringify(updatedListItems));
-        } catch (e) {
-            console.error('Falha ao atualizar a lista.', e);
-            ShowAlert('Erro', 'Falha ao atualizar a lista.');
-        }
-    };
-
     useEffect(() => {
         const fetchListItems = async () => {
             try {
                 if (initialListTitle != '') {
-                    const savedItemsJson = await AsyncStorage.getItem(initialListTitle);
-                    if (savedItemsJson !== null) {
-                        setListItems(JSON.parse(savedItemsJson));
-                        const savedDate = await AsyncStorage.getItem(`${initialListTitle}_date`);
-                        setCreationDate(savedDate || new Date().toLocaleDateString());
+                    const loadedList = await List.load(initialListTitle);
+                    if (loadedList) {
+                        setList(loadedList);
+                        setListTitle(loadedList.title);
                     }
                 }
             } catch (e) {
@@ -172,11 +115,11 @@ export default function list() {
         fetchListItems();
     }, [initialListTitle]);
 
+
     return (
         <View
             style={{
                 flex: 1,
-
                 backgroundColor: "#293241",
                 alignContent: 'center',
                 justifyContent: 'center',
@@ -192,7 +135,7 @@ export default function list() {
                     </Pressable>
                 </Link>
 
-                <MainButton title="" add color='#EB4B4B' icon="delete" onPress={() => handleDeleteList(listTitle)} />
+                <MainButton title="" add color='#EB4B4B' icon="delete" onPress={handleDeleteList} />
             </View>
 
             <View style={styles.header}>
@@ -206,7 +149,7 @@ export default function list() {
                     onChangeText={setListTitle}
                     onBlur={() => handleTitleChange(listTitle)}
                 />
-                <Text style={styles.creationDate}>{creationDate}</Text>
+                <Text style={styles.creationDate}>{list.date}</Text>
             </View>
 
             <View style={styles.buttons}>
@@ -217,7 +160,7 @@ export default function list() {
             </View>
 
             <ScrollView style={styles.scroll}>
-                {listItems.map((categoryItems, categoryIndex) => (
+                {list.items.map((categoryItems, categoryIndex) => (
                     <View key={categoryIndex}>
                         <Category title={categoryItems[0]} icon onDelete={() => handleDelete(categoryIndex)} />
                         {categoryItems.slice(1).map((item, itemIndex) => (
