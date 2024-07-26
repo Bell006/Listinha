@@ -1,6 +1,6 @@
 # Listinha
 
-Welcome to **Listinha**! This application was developed to enhance your shopping experience by allowing you to create, manage, and store your grocery lists in a practical and efficient manner.
+Welcome to **Listinha**! This application was developed to enhance your shopping experience by allowing you to create, manage, and store your grocery lists.
 
 ## Content
 
@@ -10,8 +10,7 @@ Welcome to **Listinha**! This application was developed to enhance your shopping
 
 ## Overview
 
-**Listinha** is a mobile application developed with React Native, offering an intuitive interface for creating, editing, and managing your shopping lists. With the use of react-async-storage, your data is securely stored and accessible at any time.
-
+**Listinha** is a mobile application developed with React Native, offering an intuitive interface for creating, editing, and managing your shopping lists.
 ## Features
 
 - **List creation:** Easily add new shopping lists.
@@ -45,14 +44,14 @@ Bem-vindo à **Listinha**! Este aplicativo foi desenvolvido para facilitar a sua
 
 ## Visão Geral
 
-O **Listinha** é uma aplicação móvel desenvolvida com React Native, que oferece uma interface intuitiva para que você possa criar, editar e gerenciar suas listas de compras. Com o uso do `react-async-storage`, seus dados são armazenados de forma segura e acessível a qualquer momento.
+**Listinha** é uma aplicação móvel desenvolvida com React Native, que oferece uma interface intuitiva para que você possa criar, editar e gerenciar suas listas de compras.
 
 ## Recursos
 
 - **Criação de Listas:** Adicione novas listas de compras com facilidade.
 - **Edição de Itens:** Edite os itens de suas listas conforme necessário.
 - **Marcar como Comprado:** Marque itens como comprados para acompanhar o que já foi adquirido.
-- **Armazenamento Persistente:** Suas listas são armazenadas localmente no dispositivo, garantindo acesso offline.
+- **Armazenamento Persistente:** Suas listas são armazenadas localmente no dispositivo.
 - **Interface Intuitiva:** Navegação simples e design amigável.
 
 ## Tecnologias Utilizadas
