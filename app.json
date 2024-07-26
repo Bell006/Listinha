@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptiveIcon.png"
       },
       "package": "com.bell006.listinha",
-      "versionCode": 5
+      "versionCode": 6
     },
     "web": {
       "bundler": "metro",
