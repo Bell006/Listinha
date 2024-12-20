@@ -1,23 +1,21 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CheckedItemsManager } from './ListManager';
-
 export class List {
     constructor(title, items=[], date = new Date().toLocaleDateString(), checkedItems={}) {
         this.title = title;
         this.items = items;
-        this.date = date;
+        this.date = date || new Date().toLocaleDateString();
         this.checkedItems = checkedItems;
-        this.checkedItemsManager = new CheckedItemsManager();
     }
 
     async save() {
         try {
             const data = {
+                title: this.title,
                 items: this.items,
-                date: this.date
+                date: this.date,
+                checkedItems: this.checkedItems
             };
             await AsyncStorage.setItem(this.title, JSON.stringify(data));
-            await this.checkedItemsManager.saveCheckedItems(this.title, this.checkedItems);
         } catch (e) {
             console.error('Falha ao salvar a lista.', e);
         }
@@ -26,11 +24,14 @@ export class List {
     static async load(title) {
         try {
             const data = await AsyncStorage.getItem(title);
-            const checkedItems = await this.checkedItemsManager.loadCheckedItems(title);
-            console.log(data)
             if (data) {
                 const parsedData = JSON.parse(data);
-                return new List(title, parsedData.items || [], parsedData.date, checkedItems);
+                return new List(
+                    title, 
+                    parsedData.items || [], 
+                    parsedData.date,
+                    parsedData.checkedItems || {}
+                );
             }
             return null;
         } catch (e) {
@@ -42,7 +43,6 @@ export class List {
     async delete() {
         try {
             await AsyncStorage.removeItem(this.title);
-            await this.checkedItemsManager.eleteCheckedItems(this.title);
         } catch (e) {
             console.error('Falha ao deletar a lista.', e);
         }

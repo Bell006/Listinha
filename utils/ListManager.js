@@ -26,9 +26,14 @@ export class UnnamedListManager {
 }
 
 export class CheckedItemsManager {
+    static getStorageKey(listTitle) {
+        return `__checked__${listTitle}`;
+    }
+
     static async save(listTitle, checkedItems) {
         try {
-            await AsyncStorage.setItem(`${listTitle}_checked`, JSON.stringify(checkedItems));
+            const key = this.getStorageKey(listTitle);
+            await AsyncStorage.setItem(key, JSON.stringify(checkedItems));
         } catch (e) {
             console.error('Failed to save checked items', e);
         }
@@ -36,7 +41,8 @@ export class CheckedItemsManager {
 
     static async load(listTitle) {
         try {
-            const checkedItemsJson = await AsyncStorage.getItem(`${listTitle}_checked`);
+            const key = this.getStorageKey(listTitle);
+            const checkedItemsJson = await AsyncStorage.getItem(key);
             return checkedItemsJson ? JSON.parse(checkedItemsJson) : {};
         } catch (e) {
             console.error('Failed to load checked items', e);
@@ -46,9 +52,21 @@ export class CheckedItemsManager {
 
     static async delete(listTitle) {
         try {
-            await AsyncStorage.removeItem(`${listTitle}_checked`);
+            const key = this.getStorageKey(listTitle);
+            await AsyncStorage.removeItem(key);
         } catch (e) {
             console.error('Failed to delete checked items', e);
         }
+    }
+
+    static isItemChecked(checkedItems, category, item) {
+        return checkedItems[category]?.[item] || false;
+    }
+
+    static toggleItemCheck(checkedItems, category, item, checked) {
+        if (!checkedItems[category]) {
+            checkedItems[category] = {};
+        }
+        checkedItems[category][item] = checked;
     }
 }

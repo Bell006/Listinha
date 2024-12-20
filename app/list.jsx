@@ -9,8 +9,7 @@ import { MainButton } from "../components/Button";
 import { UnnamedListManager } from '../utils/ListManager';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { List } from '../utils/ListModel';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CheckedItemsManager } from '../utils/ListManager'; 
 
 export default function list() {
 
@@ -22,20 +21,9 @@ export default function list() {
     const [list, setList] = useState(new List(initialListTitle || '', [], new Date().toLocaleDateString(), {}));
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    const unnamedListManager = new UnnamedListManager();
-
-    const clearStorage = async () => {
-        try {
-            await AsyncStorage.clear();
-            console.log('Storage successfully cleared!');
-        } catch (e) {
-            console.error('Failed to clear the storage.', e);
-        }
-    };
-
     const handleCategoryChange = async (category) => {
-        if (listTitle === '') {
-            const newTitle = await unnamedListManager.generateTitle();
+        if (listTitle == '') {
+            const newTitle = await UnnamedListManager.generateTitle();
             setListTitle(newTitle);
             list.title = newTitle;
         }
@@ -80,7 +68,7 @@ export default function list() {
         const category = list.items[categoryIndex][0];
         const item = list.items[categoryIndex][itemIndex];
         
-        list.toggleItemCheck(category, item, checked);
+        CheckedItemsManager.toggleItemCheck(list.checkedItems, category, item, checked);
         
         setList(new List(list.title, list.items, list.date, list.checkedItems));
         await list.save();
@@ -130,6 +118,7 @@ export default function list() {
                         setListTitle(loadedList.title);
                     }
                 }
+                console.log(listTitle)
             } catch (e) {
                 console.error('Falha ao carregar a lista.', e);
                 ShowAlert('Erro', 'Falha ao carregar a lista.');
@@ -195,7 +184,7 @@ export default function list() {
                                 isEditable={item === ''}
                                 index={itemIndex}
                                 onCheckChange={(isChecked) => handleCheckItem(categoryIndex, itemIndex + 1, isChecked)}   
-                                isChecked={list.isItemChecked(categoryItems[0], item)}
+                                isChecked={CheckedItemsManager.isItemChecked(list.checkedItems, categoryItems[0], item)}
                                 onEndEditing={(newItem) => handleItemChange(categoryIndex, itemIndex + 1, newItem)}
                                 onDelete={() => handleDelete(categoryIndex, itemIndex)}
                                 icon
