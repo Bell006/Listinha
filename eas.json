@@ -8,18 +8,26 @@
         "simulator": true
       },
       "distribution": "internal",
-      "environment": "preview"
+      "environment": "preview",
+      "cli": {
+        "appVersionSource": "local"
+      }
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "cli": {
+        "appVersionSource": "local"
+      }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
       },
-      "ios": {}
+      "ios": {},
+      "cli": {
+        "appVersionSource": "remote"
+      }
     }
   }
 }
-
