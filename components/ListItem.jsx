@@ -3,18 +3,23 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { TextInput, StyleSheet, View, Pressable } from "react-native";
 import IconTrash from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, index, onPress, onDelete}) {
-    const [isChecked, setIsChecked] = useState(false);
-    const [currentTitle, setCurrentTitle] = useState(title);
+export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, index, onPress, onDelete, isChecked: initialChecked = false, onCheckChange}) {
+    const [isChecked, setIsChecked] = useState(initialChecked);
     const [isEditing, setIsEditing] = useState(isEditable);
 
-    const handleEndEditing = () => {
-        if (currentTitle.trim() !== '') {
+    const handleEndEditing = (e) => {
+        const newTitle = e.nativeEvent.text;
+        if (newTitle.trim() !== '') {
             setIsEditing(false);
-            onEndEditing(currentTitle);
+            onEndEditing(newTitle);
         } else {
             onEndEditing(null);
         }
+    };
+
+    const handleCheckChange = (checked) => {
+        setIsChecked(checked);
+        onCheckChange?.(checked);
     };
 
     return (
@@ -22,8 +27,6 @@ export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, inde
             {isEditing ? (
                 <TextInput
                     style={styles.input}
-                    value={currentTitle}
-                    onChangeText={setCurrentTitle}
                     onEndEditing={handleEndEditing}
                     autoFocus
                 />
@@ -32,8 +35,8 @@ export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, inde
                     {checkBox && (
                         <BouncyCheckbox
                             isChecked={isChecked}
-                            onPress={(checked) => setIsChecked(checked)}
-                            text={currentTitle}
+                            onPress={handleCheckChange}
+                            text={title}
                             fillColor="#EE6B4D"
                             width='90%'
                             textStyle={{
