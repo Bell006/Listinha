@@ -6,9 +6,11 @@ import { Category } from "../components/Category";
 import { SelectInput } from "../components/SelectInput";
 import { ListItem } from "../components/ListItem";
 import { MainButton } from "../components/Button";
-import { handleUnnamedList } from '../utils/handleUnnamedList';
+import { UnnamedListManager } from '../utils/ListManager';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { List } from '../models/List';
+import { List } from '../utils/ListModel';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function list() {
 
@@ -17,17 +19,28 @@ export default function list() {
     const { listTitle: initialListTitle } = params;
 
     const [listTitle, setListTitle] = useState(initialListTitle || '');
-    const [list, setList] = useState(new List(initialListTitle || ''));
+    const [list, setList] = useState(new List(initialListTitle || '', [], new Date().toLocaleDateString(), {}));
     const [selectedCategory, setSelectedCategory] = useState('');
+
+    const unnamedListManager = new UnnamedListManager();
+
+    const clearStorage = async () => {
+        try {
+            await AsyncStorage.clear();
+            console.log('Storage successfully cleared!');
+        } catch (e) {
+            console.error('Failed to clear the storage.', e);
+        }
+    };
 
     const handleCategoryChange = async (category) => {
         if (listTitle === '') {
-            const newTitle = await handleUnnamedList();
+            const newTitle = await unnamedListManager.generateTitle();
             setListTitle(newTitle);
             list.title = newTitle;
         }
         list.addCategory(category);
-        setList(new List(list.title, list.items, list.date));
+        setList(new List(list.title, list.items, list.date,  list.checkedItems));
         await list.save();
     };
 
@@ -48,7 +61,7 @@ export default function list() {
     const handleAddItem = async (categoryIndex) => {
         const category = list.items[categoryIndex][0];
         list.addItem(category, '');
-        setList(new List(list.title, list.items, list.date));
+        setList(new List(list.title, list.items, list.date, list.checkedItems));
         await list.save();
     };
 
@@ -59,19 +72,30 @@ export default function list() {
         } else {
             list.items[categoryIndex][itemIndex] = newItem;
         }
-        setList(new List(list.title, list.items, list.date));
+        setList(new List(list.title, list.items, list.date, list.checkedItems));
+        await list.save();
+    };
+
+    const handleCheckItem = async (categoryIndex, itemIndex, checked) => {
+        const category = list.items[categoryIndex][0];
+        const item = list.items[categoryIndex][itemIndex];
+        
+        list.toggleItemCheck(category, item, checked);
+        
+        setList(new List(list.title, list.items, list.date, list.checkedItems));
         await list.save();
     };
 
     const handleDelete = async (categoryIndex, itemIndex = null) => {
+        const category = list.items[categoryIndex][0];
+
         if (itemIndex === null) {
-            const category = list.items[categoryIndex][0];
             list.removeCategory(category);
         } else {
-            const category = list.items[categoryIndex][0];
             list.removeItem(category, list.items[categoryIndex][itemIndex + 1]);
         }
-        setList(new List(list.title, list.items, list.date));
+    
+        setList(new List(list.title, list.items, list.date, list.checkedItems));
         await list.save();
     };
 
@@ -165,12 +189,13 @@ export default function list() {
                         <Category title={categoryItems[0]} icon onDelete={() => handleDelete(categoryIndex)} />
                         {categoryItems.slice(1).map((item, itemIndex) => (
                             <ListItem
-                                key={itemIndex}
+                                key={`item-${categoryIndex}-${itemIndex}-${item}`}
                                 title={item}
                                 checkBox
                                 isEditable={item === ''}
                                 index={itemIndex}
-                                onPress={() => { }}
+                                onCheckChange={(isChecked) => handleCheckItem(categoryIndex, itemIndex + 1, isChecked)}   
+                                isChecked={list.isItemChecked(categoryItems[0], item)}
                                 onEndEditing={(newItem) => handleItemChange(categoryIndex, itemIndex + 1, newItem)}
                                 onDelete={() => handleDelete(categoryIndex, itemIndex)}
                                 icon
