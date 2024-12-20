@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckedItemsManager  from 'ListManager.js';
+import { CheckedItemsManager } from './ListManager';
 
 export class List {
     constructor(title, items=[], date = new Date().toLocaleDateString(), checkedItems={}) {
