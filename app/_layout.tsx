@@ -11,10 +11,6 @@ export default function RootLayout() {
           name="list" 
           options={{ headerShown: false }} 
         />
-        <Stack.Screen 
-          name="newList" 
-          options={{ headerShown: false }} 
-        />
       </Stack>
     );
   }
