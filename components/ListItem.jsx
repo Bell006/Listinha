@@ -29,6 +29,7 @@ export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, inde
                     style={styles.input}
                     onEndEditing={handleEndEditing}
                     autoFocus
+                    maxLength={20}
                 />
             ) : (
                 <>
@@ -39,6 +40,7 @@ export function ListItem({ title, isEditable, onEndEditing, checkBox, icon, inde
                             text={title}
                             fillColor="#EE6B4D"
                             width='90%'
+                            editable={false}
                             textStyle={{
                                 fontSize: 20,
                                 color: '#FFFDEA',

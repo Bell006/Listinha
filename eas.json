@@ -8,17 +8,20 @@
         "simulator": true
       },
       "distribution": "internal",
-      "environment": "preview"
+      "environment": "preview",
+      "channel": "preview"
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
       },
-      "ios": {}
+      "ios": {},
+      "channel": "production"
     }
   }
 }

@@ -118,7 +118,6 @@ export default function list() {
                         setListTitle(loadedList.title);
                     }
                 }
-                console.log(listTitle)
             } catch (e) {
                 console.error('Falha ao carregar a lista.', e);
                 ShowAlert('Erro', 'Falha ao carregar a lista.');
@@ -136,7 +135,7 @@ export default function list() {
                 backgroundColor: "#293241",
                 alignContent: 'center',
                 justifyContent: 'center',
-                paddingTop: 100,
+                paddingTop: 40,
                 paddingBottom: 20,
                 paddingHorizontal: 20
             }}
@@ -179,7 +178,7 @@ export default function list() {
                         {categoryItems.slice(1).map((item, itemIndex) => (
                             <ListItem
                                 key={`item-${categoryIndex}-${itemIndex}-${item}`}
-                                title={item}
+                                title={item === '' ? '' : item}
                                 checkBox
                                 isEditable={item === ''}
                                 index={itemIndex}

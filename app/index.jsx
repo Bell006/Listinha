@@ -50,7 +50,7 @@ export default function Index() {
       <H1 title={'Bora ali, fazer umas compras?'} />
       <Pressable style={styles.addButton} onPress={() => handleListNavigation('')}>
         <Icon name="control-point" size={30} color="#DFFBFC" />
-        <Text style={styles.addText}>Nova listinha</Text>
+        <Text style={styles.addText} adjustsFontSizeToFit>Nova listinha</Text>
       </Pressable>
 
       <View style={styles.scrollViewContainer}>
@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
 
   scrollViewContainer: {
     textAlign: 'center',
-    maxHeight: 340,
+    maxHeight: '60%',
     flexWrap: 'wrap',
-    marginTop: 30,
+    marginTop: 10,
   },
 
   scroll: {
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     marginHorizontal: 20,
-    marginVertical: 15,
+    marginVertical: 4,
     borderRadius: 8,
     backgroundColor: '#0B1321',
   },
